@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengumuman Panitia P2M</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Cek Status Kepanitiaan P2M</h2>
+        <p>Masukkan NIM kamu untuk melihat hasil seleksi.</p>
+        
+        <div class="input-group">
+            <input type="text" id="nimInput" placeholder="Masukkan NIM (contoh: 12345678)">
+            <button onclick="cekStatus()">Cek Hasil</button>
+        </div>
+
+        <div id="result" class="result-card hidden">
+            </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
+</body>
+</html>
