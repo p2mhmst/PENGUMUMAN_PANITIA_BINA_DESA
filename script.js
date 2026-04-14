@@ -12,37 +12,55 @@ async function cekStatus() {
         return;
     }
 
-    // Ambil data dari table 'panitia' (sesuain nama tabel lo)
+    // Ambil data
     const { data, error } = await _supabase
         .from('panitia') 
         .select('nama, divisi, status')
         .eq('nim', nim)
         .single();
 
-    resultDiv.classList.remove('hidden', 'success', 'fail');
+    resultDiv.classList.remove('hidden', 'is-lulus', 'is-gagal');
 
     if (error || !data) {
-        // Jika NIM tidak terdaftar atau error
-        resultDiv.classList.add('fail');
+        // Jika TIDAK LOLOS atau data tidak ada
+        resultDiv.classList.add('is-gagal');
         resultDiv.innerHTML = `
-            <h3>MAAF!</h3>
-            <p>NIM ${nim} TIDAK DINYATAKAN LOLOS SELEKSI P2M.</p>
-            <p>Tetap semangat dan coba lagi di kesempatan berikutnya!</p>
+            <div class="res-header"><h1>MOHON MAAF</h1></div>
+            <div class="res-content">
+                <span class="status-label">NIM ${nim}</span>
+                <h2 class="user-name">DATA TIDAK DITEMUKAN</h2>
+                <div class="msg-box">
+                    <p>Anda belum dinyatakan lolos seleksi BINDES periode ini. Tetap semangat!</p>
+                </div>
+            </div>
         `;
     } else {
-        // Jika ketemu (Asumsi ada kolom status di DB lo)
+        // Cek Status dari DB
         if (data.status === 'Lolos') {
-            resultDiv.classList.add('success');
+            resultDiv.classList.add('is-lulus');
             resultDiv.innerHTML = `
-                <h3>SELAMAT!</h3>
-                <p>Nama: ${data.nama}</p>
-                <p>NIM: ${nim}</p>
-                <p>Dinyatakan LOLOS sebagai Panitia P2M</p>
-                <p>Divisi: <strong>${data.divisi}</strong></p>
+                <div class="res-header"><h1>SELAMAT!</h1></div>
+                <div class="res-content">
+                    <span class="status-label">NIM ${nim} | DIVISI ${data.divisi}</span>
+                    <h2 class="user-name">${data.nama.toUpperCase()}</h2>
+                    <div class="msg-box">
+                        <h3>Anda dinyatakan LOLOS!</h3>
+                        <p>Silakan hubungi koordinator divisi untuk info selanjutnya.</p>
+                    </div>
+                </div>
             `;
         } else {
-            resultDiv.classList.add('fail');
-            resultDiv.innerHTML = `<h3>MAAF!</h3><p>Anda belum berhasil.</p>`;
+            resultDiv.classList.add('is-gagal');
+            resultDiv.innerHTML = `
+                <div class="res-header"><h1>MOHON MAAF</h1></div>
+                <div class="res-content">
+                    <span class="status-label">NIM ${nim}</span>
+                    <h2 class="user-name">${data.nama.toUpperCase()}</h2>
+                    <div class="msg-box">
+                        <p>Anda belum berhasil lolos seleksi divisi.</p>
+                    </div>
+                </div>
+            `;
         }
     }
 }
