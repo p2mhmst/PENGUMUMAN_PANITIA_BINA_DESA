@@ -44,8 +44,10 @@ async function cekStatus() {
                 <span class="status-label">NIM ${nim} | DIVISI ${data.divisi}</span>
                 <h2 class="user-name">${data.nama.toUpperCase()}</h2>
                 <div class="msg-box">
-                    <h3>Anda dinyatakan LOLOS!</h3>
-                    <p>Silakan hubungi koordinator divisi untuk info selanjutnya.</p>
+                    <h3>Anda dinyatakan LOLOS!</h3>                   
+                    <p>Silakan Masuk Grup Untuk Info selanjutnya.</p>
+                    <a href="https://chat.whatsapp.com/IFvAO0qltdT70WENmsNCX1"> link grup </a> 
+
                 </div>
             </div>
         `;
