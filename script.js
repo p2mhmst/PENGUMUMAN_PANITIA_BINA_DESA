@@ -4,25 +4,28 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 async function cekStatus() {
-    const nim = document.getElementById('nimInput').value;
+    const nimInput = document.getElementById('nimInput');
     const resultDiv = document.getElementById('result');
+
+    const nim = nimInput.value.trim(); // FIX: hapus spasi
 
     if (!nim) {
         alert("Isi dulu NIM-nya, Bos!");
         return;
     }
 
-    // Ambil data
+    // Ambil data dari Supabase
     const { data, error } = await _supabase
-        .from('panitia') 
+        .from('panitia')
         .select('nama, divisi, status')
         .eq('nim', nim)
-        .single();
+        .maybeSingle(); // FIX: biar gak error kalau data kosong
 
+    // Reset class
     resultDiv.classList.remove('hidden', 'is-LULUS', 'is-gagal');
 
+    // Kalau data tidak ditemukan
     if (error || !data) {
-        // Jika TIDAK LOLOS atau data tidak ada
         resultDiv.classList.add('is-gagal');
         resultDiv.innerHTML = `
             <div class="res-header"><h1>MOHON MAAF</h1></div>
@@ -30,37 +33,40 @@ async function cekStatus() {
                 <span class="status-label">NIM ${nim}</span>
                 <h2 class="user-name">DATA TIDAK DITEMUKAN</h2>
                 <div class="msg-box">
-                    <p>Anda belum dinyatakan lolos seleksi BINDES periode ini. Tetap semangat!</p>
+                    <p>Data tidak ditemukan di sistem.</p>
+                </div>
+            </div>
+        `;
+        return;
+    }
+
+    // Normalisasi status (FIX utama)
+    const status = data.status ? data.status.trim().toLowerCase() : '';
+
+    if (status === 'lulus') {
+        resultDiv.classList.add('is-LULUS');
+        resultDiv.innerHTML = `
+            <div class="res-header"><h1>SELAMAT!</h1></div>
+            <div class="res-content">
+                <span class="status-label">NIM ${nim} | DIVISI ${data.divisi}</span>
+                <h2 class="user-name">${data.nama.toUpperCase()}</h2>
+                <div class="msg-box">
+                    <h3>Anda dinyatakan LOLOS!</h3>
+                    <p>Silakan hubungi koordinator divisi untuk info selanjutnya.</p>
                 </div>
             </div>
         `;
     } else {
-        // Cek Status dari DB
-        if (data.status === 'Lolos') {
-            resultDiv.classList.add('is-LULUS');
-            resultDiv.innerHTML = `
-                <div class="res-header"><h1>SELAMAT!</h1></div>
-                <div class="res-content">
-                    <span class="status-label">NIM ${nim} | DIVISI ${data.divisi}</span>
-                    <h2 class="user-name">${data.nama.toUpperCase()}</h2>
-                    <div class="msg-box">
-                        <h3>Anda dinyatakan LOLOS!</h3>
-                        <p>Silakan hubungi koordinator divisi untuk info selanjutnya.</p>
-                    </div>
+        resultDiv.classList.add('is-gagal');
+        resultDiv.innerHTML = `
+            <div class="res-header"><h1>MOHON MAAF</h1></div>
+            <div class="res-content">
+                <span class="status-label">NIM ${nim}</span>
+                <h2 class="user-name">${data.nama.toUpperCase()}</h2>
+                <div class="msg-box">
+                    <p>Anda belum berhasil lolos seleksi divisi.</p>
                 </div>
-            `;
-        } else {
-            resultDiv.classList.add('is-gagal');
-            resultDiv.innerHTML = `
-                <div class="res-header"><h1>MOHON MAAF</h1></div>
-                <div class="res-content">
-                    <span class="status-label">NIM ${nim}</span>
-                    <h2 class="user-name">${data.nama.toUpperCase()}</h2>
-                    <div class="msg-box">
-                        <p>Anda belum berhasil lolos seleksi divisi.</p>
-                    </div>
-                </div>
-            `;
-        }
+            </div>
+        `;
     }
 }
