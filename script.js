@@ -41,7 +41,7 @@ async function cekStatus() {
         resultDiv.innerHTML = `
             <div class="res-header"><h1>SELAMAT!</h1></div>
             <div class="res-content">
-                <span class="status-label">NIM ${nim} | DIVISI ${data.divisi}</span>
+                <span class="status-label">NIM ${nim} |  ${data.divisi}</span>
                 <h2 class="user-name">${data.nama.toUpperCase()}</h2>
                 <div class="msg-box">
                     <h3>Anda dinyatakan LOLOS!</h3>
