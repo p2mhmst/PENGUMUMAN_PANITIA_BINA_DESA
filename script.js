@@ -19,7 +19,7 @@ async function cekStatus() {
         .eq('nim', nim)
         .single();
 
-    resultDiv.classList.remove('hidden', 'is-lulus', 'is-gagal');
+    resultDiv.classList.remove('hidden', 'is-LULUS', 'is-gagal');
 
     if (error || !data) {
         // Jika TIDAK LOLOS atau data tidak ada
@@ -37,7 +37,7 @@ async function cekStatus() {
     } else {
         // Cek Status dari DB
         if (data.status === 'Lolos') {
-            resultDiv.classList.add('is-lulus');
+            resultDiv.classList.add('is-LULUS');
             resultDiv.innerHTML = `
                 <div class="res-header"><h1>SELAMAT!</h1></div>
                 <div class="res-content">
